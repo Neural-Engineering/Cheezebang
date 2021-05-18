@@ -2,9 +2,11 @@ import pygame
 import sys
 import random
 from time import sleep
+
 BLACK = (0, 0, 0)
-padWidth = 480      # 게임화면 가로크기
-padHeight = 640     # 게임화면 세로크기
+padWidth = 1700     # 게임화면 가로크기
+padHeight = 1000    # 게임화면 세로크기
+# 게임플레이창 Width (400,1300)
 rockImage = [
     './resources/rock01.png', './resources/rock02.png', './resources/rock03.png', './resources/rock04.png', './resources/rock05.png',
     './resources/rock06.png', './resources/rock07.png', './resources/rock08.png', './resources/rock09.png', './resources/rock10.png',
@@ -19,6 +21,9 @@ explosionSound = [
     './resources/explosion03.wav',
     './resources/explosion04.wav'
 ]
+rockXloc = [490, 670,850, 1030, 1210]
+
+
 def initGame():
     global gamePad, clock, background, figther, missile, explosion, missileSound, gameOverSound
     pygame.init()
@@ -33,18 +38,21 @@ def initGame():
     missileSound = pygame.mixer.Sound('./resources/missile.wav')      # 미사일 사운드
     gameOverSound = pygame.mixer.Sound('./resources/gameover.wav')    # 게임 오버 사운드
     clock = pygame.time.Clock()
+
 # 운석을 맞춘 개수 계산
 def writeScore(count):
     global gamePad
     font = pygame.font.Font("./resources/NanumGothic.ttf", 20)
     text = font.render('파괴한 운석 수: ' + str(count), True, (255, 255, 255))
     gamePad.blit(text, (10, 0))
+
 # 운석이 화면 아래로 통과한 개수
 def writePassed(count):
     global gamePad
     font = pygame.font.Font("./resources/NanumGothic.ttf", 20)
     text = font.render('놓친 운석: ' + str(count), True, (255, 0, 0))
     gamePad.blit(text, (360, 0))
+
 # 게임 메세지 출력
 def writeMessage(text):
     global gamePad, gameOverSound
@@ -59,81 +67,102 @@ def writeMessage(text):
     sleep(2)
     pygame.mixer.music.play(-1) # 배경 음악 재생
     runGame()
+
 # 전투기가 운석과 충돌했을 떄 메세지 출력
 def crash():
     global gamePad
     writeMessage("전투기 파괴!")
+
 # 게임 오버 메세지 보이기
 def gameOver():
     global gamePad
     writeMessage("게임 오버!")
+
 # 게임에 등장하는 객체를 드로잉
 def drawObject(obj, x, y):
     global gamePad
     gamePad.blit(obj, (x, y))
+
 def runGame():
     global gamePad, clock, background, figther, missile, explosion, missileSound
+
     # 전투기 미사일에 운석이 맞았을 경우 True
     isShot = False
     shotCount = 0
     rockPassed = 0
+
     # 전투기 크기
     figtherSize = figther.get_rect().size
     figtherWidth = figtherSize[0]
     figtherHeight = figtherSize[1]
+
     # 전투기 초기 위치 (x, y)
-    x = padWidth * 0.45
+    x = padWidth * 0.5 - figtherWidth * 0.5
     y = padHeight * 0.9
     figtherX = 0
+
     # 무기 좌표 리스트
     missileXY = []
+
     # 운석 랜덤 생성
     rock = pygame.image.load(random.choice(rockImage))
     rockSize = rock.get_rect().size     # 운석 크기
     rockWidth = rockSize[0]
     rockHeight = rockSize[1]
     destorySound = pygame.mixer.Sound(random.choice(explosionSound))
+
     # 운석 초기 위치 설정
-    rockX = random.randrange(0, padWidth-rockWidth)
+    rockrandom = random.randrange(400, 1300 - rockWidth)
+    rockrandom = random.choice(rockXloc)
+    rockX = rockrandom - rockWidth / 2
     rockY = 0
-    rockSpeed = 2
+    rockSpeed = 1
+
     onGame = False
     while not onGame:
         for event in pygame.event.get():
             if event.type in [pygame.QUIT]:
                 pygame.quit()
                 sys.exit()
+
             if event.type in [pygame.KEYDOWN]:
                 if event.key == pygame.K_LEFT:                                      # 전투기 왼쪽으로 이동
-                    figtherX -= 5
+                    figtherX -= 180
                 elif event.key == pygame.K_RIGHT:                                   # 전투기 오른쪽으로 이동
-                    figtherX += 5
+                    figtherX += 180
                 elif event.key == pygame.K_SPACE:                                   # 미사일 발사
                     missileSound.play()                                             # 미사일 사운드 재생
                     missileX = x + figtherWidth / 2
                     missileY = y + figtherHeight
                     missileXY.append([missileX, missileY])
+
             if event.type in [pygame.KEYUP]:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:       # 방향키를 떄면 전투기를 멈춤
                     figtherX = 0
+
         drawObject(background, 0, 0)    # 배경 화면 그리기
+
         # 전투기 위치 재조정
         x += figtherX
-        if x < 0:
-            x = 0
-        elif x > padWidth - figtherWidth:
-            x = padWidth - figtherWidth
+        if x < 490 - figtherWidth / 2:
+            x = 490 - figtherWidth / 2
+        elif x > 1210 - figtherWidth / 2 :
+            x = 1210 - figtherWidth / 2
+
         # 전투기가 운석과 충돌했는지 체크
         if y < rockY + rockHeight:
             if (x < rockX < x + figtherWidth) or \
                     (rockX + rockWidth > x and rockX + rockX + rockWidth < x + figtherWidth):
                 crash()
+
         drawObject(figther, x, y)       # 비행기를 게임 회면의 (x, y) 좌표에 그리기
+
         # 미사일 발사 화면에 그리기
         if len(missileXY) != 0:
             for i, bxy in enumerate(missileXY): # 미사일 요소에 대해 반복함
-                bxy[i] -= 10                    # 총알의 y 좌표 -10 (위로 이동)
+                bxy[1] -= 30                    # 총알의 y 좌표 -10 (위로 이동)
                 missileXY[i][1] = bxy[1]
+
                 # 미사일이 운석을 맞추었을 경우
                 if bxy[1] < rockY:
                     if rockX < bxy[0] < rockX + rockWidth:
@@ -144,6 +173,7 @@ def runGame():
                         missileX = x + figtherWidth / 2
                         missileY = y + figtherHeight
                         missileXY.append([missileX, missileY])
+
                 if bxy[1] <= 0:                 # 미사일이 화면 밖을 벗어나면
                     try:
                         missileXY.remove(bxy)   # 미사일 제거
@@ -153,11 +183,14 @@ def runGame():
                         missileXY.append([missileX, missileY])
                     except:
                         pass
+
         if len(missileXY) != 0:
             for bx, by in missileXY:
                 drawObject(missile, bx, by)
+
         writeScore(shotCount)
         rockY += rockSpeed # 운석이 아래로 움직임
+
         # 운석이 지구로 떨어진 경우
         if rockY > padHeight:
             # 새로운 운석 (랜덤)
@@ -165,35 +198,44 @@ def runGame():
             rockSize = rock.get_rect().size
             rockWidth = rockSize[0]
             rockHeight = rockSize[1]
-            rockX = random.randrange(0, padWidth - rockWidth)
+            rockrandom = random.choice(rockXloc)
+            rockX = rockrandom - rockWidth / 2
             rockY = 0
             rockPassed += 1
+
         if rockPassed == 3: # 운석 3개 놓치면 게임오버
             gameOver()
         # 놓친 운석 수 표시
         writePassed(rockPassed)
+
         # 운석을 맞춘 경우
         if isShot:
             # 운석 폭팔
             drawObject(explosion, rockX, rockY)     # 운석 폭팔 그리기
             destorySound.play()                     # 운석 폭팔 사운드 재생
+
             # 새로운 운석 (랜덤)
             rock = pygame.image.load(random.choice(rockImage))
             rockSize = rock.get_rect().size
             rockWidth = rockSize[0]
             rockHeight = rockSize[1]
-            rockX = random.randrange(0, padWidth - rockWidth)
+            rockrandom = random.choice(rockXloc)
+            rockX = rockrandom - rockWidth / 2
             rockY = 0
             destorySound = pygame.mixer.Sound(random.choice(explosionSound))
             isShot = False
+
             # 운석 맞추면 속도 증가
             rockSpeed += 0.02
             if rockSpeed >= 10:
                 rockSpeed = 10
+
         drawObject(rock, rockX, rockY)  # 운석 그리기
+
         #gamePad.fill(BLACK)             # 게임화면을 검정색으로 설정
         pygame.display.update()         # 게임화면을 다시그림
         clock.tick(60)                  # 게임화면의 초당 프레임수를 60으로 설정
     pygame.quit()                       # pygame 종료
+
 initGame()
 runGame()
