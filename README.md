@@ -1,6 +1,8 @@
 
 # Cheezebang (치즈뱅!)
 ## SSVEP와 ERP를 사용한 슈팅 게임
+![rogo](https://user-images.githubusercontent.com/66766470/123808384-a92c3580-d92b-11eb-86b5-90249620b3c9.png)
+
 -----
 # 게임 소개
 ### 고양이 군단을 쫓아내 식량을 지키세요! 
@@ -25,17 +27,17 @@
 
 
 #### 2. 게임 시작 전 12Hz와 17Hz의 중립 상태를 1분간 측정한다
-
+<img width="629" alt="뇌파 중립 측정" src="https://user-images.githubusercontent.com/66766470/123808442-b6492480-d92b-11eb-99ac-5f8bf566b1b1.png">
 
 #### 3. 왼쪽 주파수 패널(12Hz) 또는 오른쪽 주파수 패널(17Hz) 중 이동하기 원하는 방향의 패널을 주변시로 집중하여 플레이한다. 
 ![이동방법](https://user-images.githubusercontent.com/66766470/123806691-25257e00-d92a-11eb-82a8-15b93f105c3c.png)
 
 ------
 # 게임 규칙
-- 고양이를 20마리 쫓아내면 승리!
+#### - 고양이를 20마리 쫓아내면 승리!
 <img width="456" alt="win" src="https://user-images.githubusercontent.com/66766470/123807257-a9780100-d92a-11eb-946d-0293acb0c0f1.PNG">
 
-- 고양이를 3마리 놓치면 패배..
+#### - 고양이를 3마리 놓치면 패배..
 <img width="383" alt="lose" src="https://user-images.githubusercontent.com/66766470/123807304-b4329600-d92a-11eb-9be8-e671fca69b29.PNG">
 
 ------
@@ -50,6 +52,6 @@
 ### 사용 언어 : Python
 - 정민지 ([minji-o-j](https://github.com/minji-o-j))
 - 이연우 ([Nunu-0](https://github.com/Nunu-0))
-- 박송희 ([sh00=git](https://github.com/sh00-git))
+- 박송희 ([sh00-git](https://github.com/sh00-git))
 - 안병선 ([An-Byeong-Seon](https://github.com/An-Byeong-Seon))
 - 조수민 ([00ssum](https://github.com/00ssum))
